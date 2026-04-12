@@ -1,0 +1,12 @@
+*.beam
+*.ez
+/build
+erl_crash.dump
+
+# JavaScript build output
+**/build/
+**/dist/
+**/node_modules/
+
+# macOS
+.DS_Store

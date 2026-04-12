@@ -1,0 +1,19 @@
+name = "daisyui_gleam"
+version = "0.1.0"
+description = "Type-safe DaisyUI component builders for the Lustre web framework"
+licences = ["MIT"]
+repository = { type = "github", user = "p424p424", repo = "daisyui_gleam" }
+links = [
+  { title = "DaisyUI", href = "https://daisyui.com" },
+  { title = "Lustre", href = "https://hexdocs.pm/lustre/" },
+]
+
+# For a full reference of all the available options, you can have a look at
+# https://gleam.run/writing-gleam/gleam-toml/.
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+lustre = ">= 5.6.0 and < 6.0.0"
+
+[dev_dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
