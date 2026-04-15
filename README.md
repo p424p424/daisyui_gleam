@@ -28,6 +28,14 @@ button.new()
 - [Quick Start](#-quick-start)
 - [How the builder pattern works](#-how-the-builder-pattern-works)
 - [The colour system](#-the-colour-system)
+- [Theming](#-theming)
+  - [Built-in themes](#built-in-themes)
+  - [Enabling themes](#enabling-themes)
+  - [Applying a theme](#applying-a-theme)
+  - [Scoped themes](#scoped-themes)
+  - [Custom themes](#custom-themes)
+  - [Customising a built-in theme](#customising-a-built-in-theme)
+  - [Tailwind dark: selector](#tailwind-dark-selector)
 - [Components](#-components)
   - [🎬 Actions](#-actions)
   - [🗃️ Data Display](#️-data-display)
@@ -221,6 +229,249 @@ Switching DaisyUI themes updates every colour automatically — your Gleam code
 stays the same.
 
 > 📚 [DaisyUI colour tokens](https://daisyui.com/docs/colors/)
+
+---
+
+## 🎭 Theming
+
+DaisyUI ships **35 built-in themes** that instantly transform your entire UI.
+Because every component uses semantic colour tokens (`--color-primary`, etc.),
+switching themes requires zero changes to your Gleam code — just swap a
+`data-theme` attribute on the `<html>` element.
+
+### Built-in themes
+
+<details>
+<summary>View all 35 themes</summary>
+
+| Theme | | Theme | | Theme | |
+|-------|--|-------|--|-------|--|
+| `light` ⭐ default | 🤍 | `dark` 🌑 prefersdark | 🖤 | `cupcake` | 🧁 |
+| `bumblebee` | 🐝 | `emerald` | 💚 | `corporate` | 🏢 |
+| `synthwave` | 🌆 | `retro` | 📼 | `cyberpunk` | 🤖 |
+| `valentine` | 💝 | `halloween` | 🎃 | `garden` | 🌸 |
+| `forest` | 🌲 | `aqua` | 🌊 | `lofi` | 🎵 |
+| `pastel` | 🎨 | `fantasy` | 🧝 | `wireframe` | 📐 |
+| `black` | ⬛ | `luxury` | 👑 | `dracula` | 🧛 |
+| `cmyk` | 🖨️ | `autumn` | 🍂 | `business` | 💼 |
+| `acid` | 🧪 | `lemonade` | 🍋 | `night` | 🌃 |
+| `coffee` | ☕ | `winter` | ❄️ | `dim` | 🔅 |
+| `nord` | 🧊 | `sunset` | 🌅 | `caramellatte` | 🍮 |
+| `abyss` | 🌌 | `silk` | 🪡 | | |
+
+</details>
+
+---
+
+### Enabling themes
+
+Control which themes are bundled in your CSS via the `@plugin` directive.
+By default only `light` and `dark` are included.
+
+```css
+/* src/app.css */
+@import "tailwindcss";
+
+/* Default: light + dark only */
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/* Add extra themes */
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, cupcake, dracula, nord;
+}
+
+/* Enable all 35 built-in themes */
+@plugin "daisyui" {
+  themes: all;
+}
+
+/* Disable theming entirely (removes all daisyUI colour variables) */
+@plugin "daisyui" {
+  themes: false;
+}
+```
+
+> 💡 **Tip:** Use `themes: all` during development so you can test every theme,
+> then narrow the list before shipping to keep your CSS bundle lean.
+
+---
+
+### Applying a theme
+
+Set `data-theme` on the `<html>` element to activate a theme for the whole page:
+
+```html
+<html data-theme="cupcake">
+  ...
+</html>
+```
+
+In Lustre you can do this from your `view` or by manipulating the DOM directly.
+For persistent user-selectable themes, the
+[`theme_controller`](https://hexdocs.pm/daisyui_gleam/daisyui/theme_controller.html)
+component handles it with pure CSS (no JS required), or reach for
+[theme-change](https://github.com/saadeghi/theme-change) for localStorage
+persistence.
+
+---
+
+### Scoped themes
+
+`data-theme` can be placed on **any** element — themes nest freely with no limit:
+
+```html
+<html data-theme="dark">
+  <div data-theme="light">
+    This section is always light...
+    <span data-theme="retro">...and this span is always retro!</span>
+  </div>
+</html>
+```
+
+This is useful for things like always-dark sidebars, always-light modals, or
+per-widget theme previews.
+
+---
+
+### Custom themes
+
+Define a brand-new theme with `@plugin "daisyui/theme"` in your CSS file.
+Every colour token can be set; omitted tokens fall back to the DaisyUI defaults.
+
+```css
+/* src/app.css */
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  default: true;          /* use as the page default */
+  prefersdark: false;     /* use as the dark-mode default */
+  color-scheme: light;    /* hint for browser UI (scrollbars, inputs, etc.) */
+
+  /* Backgrounds */
+  --color-base-100: oklch(98% 0.02 240);
+  --color-base-200: oklch(95% 0.03 240);
+  --color-base-300: oklch(92% 0.04 240);
+  --color-base-content: oklch(20% 0.05 240);
+
+  /* Brand colours */
+  --color-primary: oklch(55% 0.3 240);
+  --color-primary-content: oklch(98% 0.01 240);
+  --color-secondary: oklch(70% 0.25 200);
+  --color-secondary-content: oklch(98% 0.01 200);
+  --color-accent: oklch(65% 0.25 160);
+  --color-accent-content: oklch(98% 0.01 160);
+  --color-neutral: oklch(50% 0.05 240);
+  --color-neutral-content: oklch(98% 0.01 240);
+
+  /* Semantic colours */
+  --color-info: oklch(70% 0.2 220);
+  --color-info-content: oklch(98% 0.01 220);
+  --color-success: oklch(65% 0.25 140);
+  --color-success-content: oklch(98% 0.01 140);
+  --color-warning: oklch(80% 0.25 80);
+  --color-warning-content: oklch(20% 0.05 80);
+  --color-error: oklch(65% 0.3 30);
+  --color-error-content: oklch(98% 0.01 30);
+
+  /* Shape */
+  --radius-selector: 1rem;    /* checkboxes, radios, badges */
+  --radius-field: 0.25rem;    /* inputs, selects */
+  --radius-box: 0.5rem;       /* cards, modals, dropdowns */
+
+  /* Sizing */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Border */
+  --border: 1px;
+
+  /* Effects */
+  --depth: 1;   /* shadow depth multiplier */
+  --noise: 0;   /* noise texture overlay opacity */
+}
+```
+
+Activate it the same way as a built-in theme:
+
+```html
+<html data-theme="mytheme">…</html>
+```
+
+> 🌐 If you are loading DaisyUI from a CDN (no build step), define your theme
+> with plain CSS variables instead:
+> ```css
+> :root:has(input.theme-controller[value=mytheme]:checked),
+> [data-theme="mytheme"] {
+>   color-scheme: light;
+>   --color-primary: oklch(55% 0.3 240);
+>   /* …rest of your variables */
+> }
+> ```
+
+---
+
+### Customising a built-in theme
+
+Override only the tokens you want to change — everything else is inherited from
+the original theme:
+
+```css
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "light";       /* same name as built-in = override */
+  default: true;
+  --color-primary: oklch(50% 0.3 260);   /* custom purple primary */
+  --color-secondary: oklch(65% 0.2 180); /* custom teal secondary */
+}
+```
+
+You can also add element-level overrides scoped to a specific theme:
+
+```css
+[data-theme="light"] {
+  .btn-brand {
+    background-color: #1EA1F1;
+    border-color: #1EA1F1;
+  }
+  .btn-brand:hover {
+    background-color: #1C96E1;
+    border-color: #1C96E1;
+  }
+}
+```
+
+---
+
+### Tailwind `dark:` selector
+
+Configure daisyUI so that Tailwind's `dark:` prefix maps to a specific theme.
+This is done with `@custom-variant` after your plugin declarations:
+
+```css
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: winter --default, night --prefersdark;
+}
+
+/* Map dark: to the "night" daisyUI theme */
+@custom-variant dark (&:where([data-theme=night], [data-theme=night] *));
+```
+
+Now you can use `dark:` utilities in your markup:
+
+```html
+<div class="p-10 dark:p-20">
+  10px padding on the winter theme, 20px on the night theme
+</div>
+```
+
+> 📚 [Full DaisyUI theming docs](https://daisyui.com/docs/themes/)
 
 ---
 
