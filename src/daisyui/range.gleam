@@ -193,7 +193,7 @@ pub fn build(r: Range(msg)) -> Element(msg) {
 
   let optional_attrs = list.flatten([
     case r.value {
-      Some(v) -> [attribute.attribute("value", int.to_string(v))]
+      Some(v) -> [attribute.value(int.to_string(v))]
       None -> []
     },
     case r.step {

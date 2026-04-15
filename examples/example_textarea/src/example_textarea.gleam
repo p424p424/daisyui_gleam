@@ -73,18 +73,22 @@ fn theme_select(current: String) -> Element(Msg) {
 
 fn main_content() -> Element(Msg) {
   html.main(
-    [attribute.class("pt-20 pb-10 flex flex-col items-center min-h-screen gap-8")],
+    [
+      attribute.class(
+        "pt-20 pb-10 flex flex-col items-center min-h-screen gap-8",
+      ),
+    ],
     [
       section("Basic", [
         textarea.new()
-          |> textarea.attrs([attribute.placeholder("Bio")])
-          |> textarea.build,
+        |> textarea.attrs([attribute.placeholder("Bio")])
+        |> textarea.build(),
       ]),
       section("Ghost (no background)", [
         textarea.new()
-          |> textarea.ghost
-          |> textarea.attrs([attribute.placeholder("Bio")])
-          |> textarea.build,
+        |> textarea.ghost()
+        |> textarea.attrs([attribute.placeholder("Bio")])
+        |> textarea.build(),
       ]),
       section("With fieldset label", [
         html.fieldset([attribute.class("fieldset")], [
@@ -96,81 +100,75 @@ fn main_content() -> Element(Msg) {
               attribute.placeholder("Bio"),
               attribute.class("h-24"),
             ])
-            |> textarea.build,
+            |> textarea.build(),
           html.div([attribute.class("label")], [html.text("Optional")]),
         ]),
       ]),
       section("Colors", [
-        html.div(
-          [attribute.class("flex flex-col gap-2 w-full max-w-xs")],
-          [
-            textarea.new()
-              |> textarea.primary
-              |> textarea.attrs([attribute.placeholder("Primary")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.secondary
-              |> textarea.attrs([attribute.placeholder("Secondary")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.accent
-              |> textarea.attrs([attribute.placeholder("Accent")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.neutral
-              |> textarea.attrs([attribute.placeholder("Neutral")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.info
-              |> textarea.attrs([attribute.placeholder("Info")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.success
-              |> textarea.attrs([attribute.placeholder("Success")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.warning
-              |> textarea.attrs([attribute.placeholder("Warning")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.error
-              |> textarea.attrs([attribute.placeholder("Error")])
-              |> textarea.build,
-          ],
-        ),
+        html.div([attribute.class("flex flex-col gap-2 w-full max-w-xs")], [
+          textarea.new()
+            |> textarea.primary
+            |> textarea.attrs([attribute.placeholder("Primary")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.secondary
+            |> textarea.attrs([attribute.placeholder("Secondary")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.accent
+            |> textarea.attrs([attribute.placeholder("Accent")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.neutral
+            |> textarea.attrs([attribute.placeholder("Neutral")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.info
+            |> textarea.attrs([attribute.placeholder("Info")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.success
+            |> textarea.attrs([attribute.placeholder("Success")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.warning
+            |> textarea.attrs([attribute.placeholder("Warning")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.error
+            |> textarea.attrs([attribute.placeholder("Error")])
+            |> textarea.build,
+        ]),
       ]),
       section("Sizes", [
-        html.div(
-          [attribute.class("flex flex-col gap-2 w-full max-w-xs")],
-          [
-            textarea.new()
-              |> textarea.xs
-              |> textarea.attrs([attribute.placeholder("xs")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.sm
-              |> textarea.attrs([attribute.placeholder("sm")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.md
-              |> textarea.attrs([attribute.placeholder("md")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.lg
-              |> textarea.attrs([attribute.placeholder("lg")])
-              |> textarea.build,
-            textarea.new()
-              |> textarea.xl
-              |> textarea.attrs([attribute.placeholder("xl")])
-              |> textarea.build,
-          ],
-        ),
+        html.div([attribute.class("flex flex-col gap-2 w-full max-w-xs")], [
+          textarea.new()
+            |> textarea.xs
+            |> textarea.attrs([attribute.placeholder("xs")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.sm
+            |> textarea.attrs([attribute.placeholder("sm")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.md
+            |> textarea.attrs([attribute.placeholder("md")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.lg()
+            |> textarea.attrs([attribute.placeholder("lg")])
+            |> textarea.build,
+          textarea.new()
+            |> textarea.xl
+            |> textarea.attrs([attribute.placeholder("xl")])
+            |> textarea.build,
+        ]),
       ]),
       section("Disabled", [
         textarea.new()
-          |> textarea.disabled
-          |> textarea.attrs([attribute.placeholder("Bio")])
-          |> textarea.build,
+        |> textarea.disabled
+        |> textarea.attrs([attribute.placeholder("Bio")])
+        |> textarea.build,
       ]),
     ],
   )

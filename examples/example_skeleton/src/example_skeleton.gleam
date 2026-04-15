@@ -99,7 +99,7 @@ fn main_content() -> Element(Msg) {
         ]),
       ]),
       section("skeleton-text — animated gradient text", [
-        skeleton.text("AI is thinking harder..."),
+        skeleton.text("Loading your content..."),
       ]),
     ],
   )

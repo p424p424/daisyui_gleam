@@ -1,5 +1,5 @@
 {
-  "name": "example_filter",
+  "name": "example_hover_gallery",
   "version": "1.0.0",
   "description": "[![Package Version](https://img.shields.io/hexpm/v/example_filter)](https://hex.pm/packages/example_filter) [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/example_filter/)",
   "main": "index.js",

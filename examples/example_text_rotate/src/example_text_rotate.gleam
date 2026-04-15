@@ -100,7 +100,7 @@ fn main_content() -> Element(Msg) {
       ]),
       section("Inline in a sentence — coloured words", [
         html.span([attribute.class("text-xl")], [
-          html.text("Providing AI Agents for "),
+          html.text("Building great software for "),
           text_rotate.new()
             |> text_rotate.items([
               text_rotate.item_el(

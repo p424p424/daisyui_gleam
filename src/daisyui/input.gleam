@@ -308,7 +308,7 @@ pub fn build(i: Input(msg)) -> Element(msg) {
     False -> None
   }
   let validator_class = case i.validator {
-    True -> Some("validator")
+    True -> Some("input-validator")
     False -> None
   }
   let class =
