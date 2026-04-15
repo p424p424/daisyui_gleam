@@ -192,11 +192,8 @@ fn page_header(current_theme: String) -> Element(Msg) {
 // ---------------------------------------------------------------------------
 
 fn todo_input(draft: String) -> Element(Msg) {
-  html.form(
-    [
-      attribute.class("flex gap-2"),
-      event.on("submit", decode.success(UserSubmittedTodo)),
-    ],
+  html.div(
+    [attribute.class("flex gap-2")],
     [
       input.new()
         |> input.primary
@@ -206,11 +203,18 @@ fn todo_input(draft: String) -> Element(Msg) {
           attribute.value(draft),
           attribute.autocomplete("off"),
           event.on_input(UserTypedDraft),
+          event.on("keydown", {
+            use key <- decode.field("key", decode.string)
+            case key {
+              "Enter" -> decode.success(UserSubmittedTodo)
+              _ -> decode.failure(UserSubmittedTodo, "not-enter")
+            }
+          }),
         ])
         |> input.build,
       button.new()
         |> button.primary
-        |> button.attrs([attribute.type_("submit")])
+        |> button.attrs([event.on_click(UserSubmittedTodo)])
         |> button.text("Add")
         |> button.build,
     ],
