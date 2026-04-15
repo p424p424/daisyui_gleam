@@ -9,7 +9,7 @@
 ///
 /// toggle.new()
 /// |> toggle.primary
-/// |> toggle.checked
+/// |> toggle.on_check(UserToggledDarkMode)
 /// |> toggle.build
 /// ```
 ///
@@ -32,6 +32,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Type
@@ -149,7 +150,26 @@ pub fn disabled(t: Toggle(msg)) -> Toggle(msg) {
 
 /// Merges additional Lustre attributes onto the `<input>`.
 pub fn attrs(t: Toggle(msg), a: List(Attribute(msg))) -> Toggle(msg) {
-  Toggle(..t, attrs: a)
+  Toggle(..t, attrs: list.append(t.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(checked)` when the toggle is switched on or off.
+pub fn on_check(t: Toggle(msg), msg: fn(Bool) -> msg) -> Toggle(msg) {
+  Toggle(..t, attrs: list.append(t.attrs, [event.on_check(msg)]))
+}
+
+/// Fires `msg` when the toggle receives focus.
+pub fn on_focus(t: Toggle(msg), msg: msg) -> Toggle(msg) {
+  Toggle(..t, attrs: list.append(t.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the toggle loses focus.
+pub fn on_blur(t: Toggle(msg), msg: msg) -> Toggle(msg) {
+  Toggle(..t, attrs: list.append(t.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------

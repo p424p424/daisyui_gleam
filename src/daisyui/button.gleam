@@ -21,7 +21,7 @@
 /// // A primary button that fires a message on click
 /// button.new()
 /// |> button.primary
-/// |> button.attrs([event.on_click(UserClickedSave)])
+/// |> button.on_click(UserClickedSave)
 /// |> button.text("Save")
 /// |> button.build
 ///
@@ -53,6 +53,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -448,6 +449,55 @@ pub fn text(b: Button(msg), label: String) -> Button(msg) {
 }
 
 // ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg` when the button is clicked.
+pub fn on_click(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_click(msg)]))
+}
+
+/// Fires `msg` when a mouse button is pressed down over the button.
+pub fn on_mouse_down(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_mouse_down(msg)]))
+}
+
+/// Fires `msg` when a mouse button is released over the button.
+pub fn on_mouse_up(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_mouse_up(msg)]))
+}
+
+/// Fires `msg` when the pointer enters the button's bounding box.
+pub fn on_mouse_enter(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_mouse_enter(msg)]))
+}
+
+/// Fires `msg` when the pointer leaves the button's bounding box.
+pub fn on_mouse_leave(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_mouse_leave(msg)]))
+}
+
+/// Fires `msg` when the button receives focus.
+pub fn on_focus(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the button loses focus.
+pub fn on_blur(b: Button(msg), msg: msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_blur(msg)]))
+}
+
+/// Fires `msg(key)` when a key is pressed while the button is focused.
+pub fn on_keydown(b: Button(msg), msg: fn(String) -> msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_keydown(msg)]))
+}
+
+/// Fires `msg(key)` when a key is released while the button is focused.
+pub fn on_keyup(b: Button(msg), msg: fn(String) -> msg) -> Button(msg) {
+  Button(..b, attrs: list.append(b.attrs, [event.on_keyup(msg)]))
+}
+
+// ---------------------------------------------------------------------------
 // Build
 // ---------------------------------------------------------------------------
 
@@ -466,13 +516,13 @@ pub fn text(b: Button(msg), label: String) -> Button(msg) {
 ///   html.div([attribute.class("flex gap-2")], [
 ///     button.new()
 ///     |> button.primary
-///     |> button.attrs([event.on_click(UserSaved)])
+///     |> button.on_click(UserSaved)
 ///     |> button.text("Save")
 ///     |> button.build,
 ///
 ///     button.new()
 ///     |> button.ghost
-///     |> button.attrs([event.on_click(UserCancelled)])
+///     |> button.on_click(UserCancelled)
 ///     |> button.text("Cancel")
 ///     |> button.build,
 ///   ])

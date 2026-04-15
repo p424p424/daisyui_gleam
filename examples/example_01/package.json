@@ -1,7 +1,0 @@
-{
-  "name": "example_01",
-  "version": "1.0.0",
-  "devDependencies": {
-    "daisyui": "^5.0.0"
-  }
-}

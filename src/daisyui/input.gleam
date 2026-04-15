@@ -19,9 +19,10 @@
 /// import lustre/attribute
 /// import lustre/element/html
 ///
-/// // Plain input
+/// // Plain input with event handler
 /// input.new()
 /// |> input.primary
+/// |> input.on_input(UserTyped)
 /// |> input.attrs([attribute.placeholder("Email")])
 /// |> input.build
 ///
@@ -45,6 +46,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -258,7 +260,7 @@ pub fn validator(i: Input(msg)) -> Input(msg) {
 ///
 /// For the label-wrapper variant these land on the `<label>` element.
 pub fn attrs(i: Input(msg), a: List(Attribute(msg))) -> Input(msg) {
-  Input(..i, attrs: a)
+  Input(..i, attrs: list.append(i.attrs, a))
 }
 
 /// Sets the child elements rendered inside a label-wrapper input.
@@ -279,6 +281,40 @@ pub fn attrs(i: Input(msg), a: List(Attribute(msg))) -> Input(msg) {
 /// ```
 pub fn children(i: Input(msg), c: List(Element(msg))) -> Input(msg) {
   Input(..i, children: c)
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(value)` on every keystroke in the input.
+pub fn on_input(i: Input(msg), msg: fn(String) -> msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_input(msg)]))
+}
+
+/// Fires `msg(value)` when the input value is committed (blur or Enter).
+pub fn on_change(i: Input(msg), msg: fn(String) -> msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_change(msg)]))
+}
+
+/// Fires `msg` when the input receives focus.
+pub fn on_focus(i: Input(msg), msg: msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the input loses focus.
+pub fn on_blur(i: Input(msg), msg: msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_blur(msg)]))
+}
+
+/// Fires `msg(key)` when a key is pressed while the input is focused.
+pub fn on_keydown(i: Input(msg), msg: fn(String) -> msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_keydown(msg)]))
+}
+
+/// Fires `msg(key)` when a key is released while the input is focused.
+pub fn on_keyup(i: Input(msg), msg: fn(String) -> msg) -> Input(msg) {
+  Input(..i, attrs: list.append(i.attrs, [event.on_keyup(msg)]))
 }
 
 // ---------------------------------------------------------------------------

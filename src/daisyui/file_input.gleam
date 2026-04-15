@@ -44,6 +44,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -202,7 +203,26 @@ pub fn disabled(f: FileInput(msg)) -> FileInput(msg) {
 /// ## Reference
 /// - [Lustre attribute module](https://hexdocs.pm/lustre/)
 pub fn attrs(f: FileInput(msg), a: List(Attribute(msg))) -> FileInput(msg) {
-  FileInput(..f, attrs: a)
+  FileInput(..f, attrs: list.append(f.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(value)` when the user selects a file.
+pub fn on_change(f: FileInput(msg), msg: fn(String) -> msg) -> FileInput(msg) {
+  FileInput(..f, attrs: list.append(f.attrs, [event.on_change(msg)]))
+}
+
+/// Fires `msg` when the file input receives focus.
+pub fn on_focus(f: FileInput(msg), msg: msg) -> FileInput(msg) {
+  FileInput(..f, attrs: list.append(f.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the file input loses focus.
+pub fn on_blur(f: FileInput(msg), msg: msg) -> FileInput(msg) {
+  FileInput(..f, attrs: list.append(f.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------

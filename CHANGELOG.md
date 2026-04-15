@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **First-class event handler functions** on all interactive components —
+  no need to reach for `attrs([event.on_X(...)])` for common cases.
+  Each function appends to the builder's attribute list so it composes
+  freely with `attrs/2` and other event functions.
+
+  | Component | New functions |
+  |-----------|--------------|
+  | `button` | `on_click`, `on_mouse_down`, `on_mouse_up`, `on_mouse_enter`, `on_mouse_leave`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+  | `input` | `on_input`, `on_change`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+  | `textarea` | `on_input`, `on_change`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+  | `toggle` | `on_check`, `on_focus`, `on_blur` |
+  | `radio` | `on_check`, `on_focus`, `on_blur` |
+  | `select` | `on_change`, `on_focus`, `on_blur` |
+  | `range` | `on_input`, `on_change`, `on_focus`, `on_blur` |
+  | `file_input` | `on_change`, `on_focus`, `on_blur` |
+  | `link` | `on_click`, `on_mouse_enter`, `on_mouse_leave`, `on_focus`, `on_blur` |
+  | `card` | `on_click`, `on_mouse_enter`, `on_mouse_leave` |
+
+### Changed
+
+- **`attrs/2` now appends** on all components that previously replaced
+  (`input`, `textarea`, `toggle`, `radio`, `select`, `range`, `file_input`,
+  `link`). Calling `attrs` more than once now accumulates attributes rather
+  than wiping the previous call. `button` and `card` were already appending.
+
 ## [0.1.0] - 2026-04-13
 
 ### Added

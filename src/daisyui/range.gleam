@@ -18,7 +18,7 @@
 /// |> range.value(40)
 /// |> range.step(10)
 /// |> range.primary
-/// |> range.attrs([event.on_input(UserMovedSlider)])
+/// |> range.on_input(UserMovedSlider)
 /// |> range.build
 /// ```
 ///
@@ -31,6 +31,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Type
@@ -171,7 +172,31 @@ pub fn xl(r: Range(msg)) -> Range(msg) {
 /// |> range.build
 /// ```
 pub fn attrs(r: Range(msg), a: List(Attribute(msg))) -> Range(msg) {
-  Range(..r, attrs: a)
+  Range(..r, attrs: list.append(r.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(value)` on every movement of the range thumb.
+pub fn on_input(r: Range(msg), msg: fn(String) -> msg) -> Range(msg) {
+  Range(..r, attrs: list.append(r.attrs, [event.on_input(msg)]))
+}
+
+/// Fires `msg(value)` when the range value is committed (mouse/touch release).
+pub fn on_change(r: Range(msg), msg: fn(String) -> msg) -> Range(msg) {
+  Range(..r, attrs: list.append(r.attrs, [event.on_change(msg)]))
+}
+
+/// Fires `msg` when the range receives focus.
+pub fn on_focus(r: Range(msg), msg: msg) -> Range(msg) {
+  Range(..r, attrs: list.append(r.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the range loses focus.
+pub fn on_blur(r: Range(msg), msg: msg) -> Range(msg) {
+  Range(..r, attrs: list.append(r.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------

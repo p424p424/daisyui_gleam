@@ -19,6 +19,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Type
@@ -140,7 +141,41 @@ pub fn disabled(t: Textarea(msg)) -> Textarea(msg) {
 
 /// Merges additional Lustre attributes onto the `<textarea>`.
 pub fn attrs(t: Textarea(msg), a: List(Attribute(msg))) -> Textarea(msg) {
-  Textarea(..t, attrs: a)
+  Textarea(..t, attrs: list.append(t.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(value)` on every keystroke in the textarea.
+pub fn on_input(t: Textarea(msg), msg: fn(String) -> msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_input(msg)]))
+}
+
+/// Fires `msg(value)` when the textarea value is committed (blur).
+pub fn on_change(t: Textarea(msg), msg: fn(String) -> msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_change(msg)]))
+}
+
+/// Fires `msg` when the textarea receives focus.
+pub fn on_focus(t: Textarea(msg), msg: msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the textarea loses focus.
+pub fn on_blur(t: Textarea(msg), msg: msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_blur(msg)]))
+}
+
+/// Fires `msg(key)` when a key is pressed while the textarea is focused.
+pub fn on_keydown(t: Textarea(msg), msg: fn(String) -> msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_keydown(msg)]))
+}
+
+/// Fires `msg(key)` when a key is released while the textarea is focused.
+pub fn on_keyup(t: Textarea(msg), msg: fn(String) -> msg) -> Textarea(msg) {
+  Textarea(..t, attrs: list.append(t.attrs, [event.on_keyup(msg)]))
 }
 
 // ---------------------------------------------------------------------------

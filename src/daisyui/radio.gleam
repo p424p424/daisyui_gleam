@@ -13,11 +13,8 @@
 ///
 /// radio.new()
 /// |> radio.primary
-/// |> radio.attrs([
-///   attribute.name("colour"),
-///   attribute.value("red"),
-///   event.on_check(UserPickedRed),
-/// ])
+/// |> radio.on_check(UserPickedRed)
+/// |> radio.attrs([attribute.name("colour"), attribute.value("red")])
 /// |> radio.build
 /// ```
 ///
@@ -29,6 +26,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Type
@@ -157,7 +155,26 @@ pub fn disabled(r: Radio(msg)) -> Radio(msg) {
 /// |> radio.build
 /// ```
 pub fn attrs(r: Radio(msg), a: List(Attribute(msg))) -> Radio(msg) {
-  Radio(..r, attrs: a)
+  Radio(..r, attrs: list.append(r.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(checked)` when this radio option is selected.
+pub fn on_check(r: Radio(msg), msg: fn(Bool) -> msg) -> Radio(msg) {
+  Radio(..r, attrs: list.append(r.attrs, [event.on_check(msg)]))
+}
+
+/// Fires `msg` when the radio receives focus.
+pub fn on_focus(r: Radio(msg), msg: msg) -> Radio(msg) {
+  Radio(..r, attrs: list.append(r.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the radio loses focus.
+pub fn on_blur(r: Radio(msg), msg: msg) -> Radio(msg) {
+  Radio(..r, attrs: list.append(r.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 /// // A primary select with two options
 /// select.new()
 /// |> select.primary
-/// |> select.attrs([event.on_input(UserChangedOption)])
+/// |> select.on_change(UserChangedOption)
 /// |> select.children([
 ///   html.option([attribute.value("a")], [html.text("Option A")]),
 ///   html.option([attribute.value("b")], [html.text("Option B")]),
@@ -47,6 +47,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -205,7 +206,7 @@ pub fn disabled(s: Select(msg)) -> Select(msg) {
 /// |> select.build
 /// ```
 pub fn attrs(s: Select(msg), a: List(Attribute(msg))) -> Select(msg) {
-  Select(..s, attrs: a)
+  Select(..s, attrs: list.append(s.attrs, a))
 }
 
 /// Set the child `<option>` (or `<optgroup>`) elements.
@@ -220,6 +221,25 @@ pub fn attrs(s: Select(msg), a: List(Attribute(msg))) -> Select(msg) {
 /// ```
 pub fn children(s: Select(msg), c: List(Element(msg))) -> Select(msg) {
   Select(..s, children: c)
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg(value)` when the selected option changes.
+pub fn on_change(s: Select(msg), msg: fn(String) -> msg) -> Select(msg) {
+  Select(..s, attrs: list.append(s.attrs, [event.on_change(msg)]))
+}
+
+/// Fires `msg` when the select receives focus.
+pub fn on_focus(s: Select(msg), msg: msg) -> Select(msg) {
+  Select(..s, attrs: list.append(s.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the select loses focus.
+pub fn on_blur(s: Select(msg), msg: msg) -> Select(msg) {
+  Select(..s, attrs: list.append(s.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------

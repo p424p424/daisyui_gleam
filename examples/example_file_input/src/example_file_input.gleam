@@ -73,81 +73,92 @@ fn theme_select(current: String) -> Element(Msg) {
 }
 
 fn main_content() -> Element(Msg) {
-  html.main(
-    [attribute.class("pt-20 pb-10 flex justify-center min-h-screen")],
-    [
-      html.div([attribute.class("w-full max-w-xl space-y-10 p-4")], [
-        // Basic
-        section("Basic", [
+  html.main([attribute.class("pt-20 pb-10 flex justify-center min-h-screen")], [
+    html.div([attribute.class("w-full max-w-xl space-y-10 p-4")], [
+      // Basic
+      section("Basic", [
+        file_input.new() |> file_input.build,
+      ]),
+      // Ghost
+      section("Ghost", [
+        file_input.new() |> file_input.ghost |> file_input.build,
+      ]),
+      // With fieldset and label
+      section("With fieldset and label", [
+        fieldset.new()
+        |> fieldset.legend("Pick a file")
+        |> fieldset.children([
           file_input.new() |> file_input.build,
-        ]),
-        // Ghost
-        section("Ghost", [
-          file_input.new() |> file_input.ghost |> file_input.build,
-        ]),
-        // With fieldset and label
-        section("With fieldset and label", [
-          fieldset.new()
-            |> fieldset.legend("Pick a file")
-            |> fieldset.children([
-              file_input.new() |> file_input.build,
-              html.label([attribute.class("label")], [
-                html.text("Max size 2MB"),
-              ]),
-            ])
-            |> fieldset.build,
-        ]),
-        // Sizes
-        section("Sizes", [
-          html.div([attribute.class("flex flex-col gap-2")], [
-            html.div([attribute.class("flex items-center gap-3")], [
-              html.span([attribute.class("text-xs opacity-60 w-6")], [html.text("xs")]),
-              file_input.new() |> file_input.xs |> file_input.build,
-            ]),
-            html.div([attribute.class("flex items-center gap-3")], [
-              html.span([attribute.class("text-xs opacity-60 w-6")], [html.text("sm")]),
-              file_input.new() |> file_input.sm |> file_input.build,
-            ]),
-            html.div([attribute.class("flex items-center gap-3")], [
-              html.span([attribute.class("text-xs opacity-60 w-6")], [html.text("md")]),
-              file_input.new() |> file_input.md |> file_input.build,
-            ]),
-            html.div([attribute.class("flex items-center gap-3")], [
-              html.span([attribute.class("text-xs opacity-60 w-6")], [html.text("lg")]),
-              file_input.new() |> file_input.lg |> file_input.build,
-            ]),
-            html.div([attribute.class("flex items-center gap-3")], [
-              html.span([attribute.class("text-xs opacity-60 w-6")], [html.text("xl")]),
-              file_input.new() |> file_input.xl |> file_input.build,
-            ]),
+          html.label([attribute.class("label")], [
+            html.text("Max size 2MB"),
           ]),
-        ]),
-        // Colours
-        section("Colours", [
-          html.div([attribute.class("flex flex-col gap-2")], [
-            file_input.new() |> file_input.neutral |> file_input.build,
-            file_input.new() |> file_input.primary |> file_input.build,
-            file_input.new() |> file_input.secondary |> file_input.build,
-            file_input.new() |> file_input.accent |> file_input.build,
-            file_input.new() |> file_input.info |> file_input.build,
-            file_input.new() |> file_input.success |> file_input.build,
-            file_input.new() |> file_input.warning |> file_input.build,
-            file_input.new() |> file_input.error |> file_input.build,
+        ])
+        |> fieldset.build,
+      ]),
+      // Sizes
+      section("Sizes", [
+        html.div([attribute.class("flex flex-col gap-2")], [
+          html.div([attribute.class("flex items-center gap-3")], [
+            html.span([attribute.class("text-xs opacity-60 w-6")], [
+              html.text("xs"),
+            ]),
+            file_input.new() |> file_input.xs |> file_input.build,
           ]),
-        ]),
-        // Disabled
-        section("Disabled", [
-          file_input.new() |> file_input.disabled |> file_input.build,
+          html.div([attribute.class("flex items-center gap-3")], [
+            html.span([attribute.class("text-xs opacity-60 w-6")], [
+              html.text("sm"),
+            ]),
+            file_input.new() |> file_input.sm |> file_input.build,
+          ]),
+          html.div([attribute.class("flex items-center gap-3")], [
+            html.span([attribute.class("text-xs opacity-60 w-6")], [
+              html.text("md"),
+            ]),
+            file_input.new() |> file_input.md |> file_input.build,
+          ]),
+          html.div([attribute.class("flex items-center gap-3")], [
+            html.span([attribute.class("text-xs opacity-60 w-6")], [
+              html.text("lg"),
+            ]),
+            file_input.new() |> file_input.lg |> file_input.build,
+          ]),
+          html.div([attribute.class("flex items-center gap-3")], [
+            html.span([attribute.class("text-xs opacity-60 w-6")], [
+              html.text("xl"),
+            ]),
+            file_input.new() |> file_input.xl |> file_input.build,
+          ]),
         ]),
       ]),
-    ],
-  )
+      // Colours
+      section("Colours", [
+        html.div([attribute.class("flex flex-col gap-2")], [
+          file_input.new() |> file_input.neutral |> file_input.build,
+          file_input.new() |> file_input.primary |> file_input.build,
+          file_input.new() |> file_input.secondary |> file_input.build,
+          file_input.new() |> file_input.accent |> file_input.build,
+          file_input.new() |> file_input.info |> file_input.build,
+          file_input.new() |> file_input.success |> file_input.build,
+          file_input.new() |> file_input.warning |> file_input.build,
+          file_input.new() |> file_input.error |> file_input.build,
+        ]),
+      ]),
+      // Disabled
+      section("Disabled", [
+        file_input.new() |> file_input.disabled |> file_input.build,
+      ]),
+    ]),
+  ])
 }
 
 fn section(label: String, children: List(Element(Msg))) -> Element(Msg) {
   html.div([attribute.class("space-y-3")], [
     html.p(
-      [attribute.class("text-sm font-semibold opacity-60 uppercase tracking-wide")],
+      [
+        attribute.class(
+          "text-sm font-semibold opacity-60 uppercase tracking-wide",
+        ),
+      ],
       [html.text(label)],
     ),
     ..children

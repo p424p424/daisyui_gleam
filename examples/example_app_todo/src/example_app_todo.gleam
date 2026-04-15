@@ -100,18 +100,12 @@ fn update(model: Model, msg: Msg) -> Model {
       )
 
     UserDeletedTodo(id) ->
-      Model(
-        ..model,
-        todos: list.filter(model.todos, fn(t) { t.id != id }),
-      )
+      Model(..model, todos: list.filter(model.todos, fn(t) { t.id != id }))
 
     UserSetFilter(f) -> Model(..model, filter: f)
 
     UserClearedDone ->
-      Model(
-        ..model,
-        todos: list.filter(model.todos, fn(t) { !t.done }),
-      )
+      Model(..model, todos: list.filter(model.todos, fn(t) { !t.done }))
   }
 }
 
@@ -137,15 +131,12 @@ fn view(model: Model) -> Element(Msg) {
     ],
     [
       page_header(model.theme),
-      html.main(
-        [attribute.class("max-w-2xl mx-auto px-4 py-10 space-y-6")],
-        [
-          todo_input(model.draft),
-          filter_bar(model.filter, model.todos),
-          todo_list(model.todos, model.filter),
-          footer_bar(model.todos),
-        ],
-      ),
+      html.main([attribute.class("max-w-2xl mx-auto px-4 py-10 space-y-6")], [
+        todo_input(model.draft),
+        filter_bar(model.filter, model.todos),
+        todo_list(model.todos, model.filter),
+        footer_bar(model.todos),
+      ]),
     ],
   )
 }
@@ -192,33 +183,30 @@ fn page_header(current_theme: String) -> Element(Msg) {
 // ---------------------------------------------------------------------------
 
 fn todo_input(draft: String) -> Element(Msg) {
-  html.div(
-    [attribute.class("flex gap-2")],
-    [
-      input.new()
-        |> input.primary
-        |> input.attrs([
-          attribute.class("flex-1"),
-          attribute.placeholder("What needs to be done?"),
-          attribute.value(draft),
-          attribute.autocomplete("off"),
-          event.on_input(UserTypedDraft),
-          event.on("keydown", {
-            use key <- decode.field("key", decode.string)
-            case key {
-              "Enter" -> decode.success(UserSubmittedTodo)
-              _ -> decode.failure(UserSubmittedTodo, "not-enter")
-            }
-          }),
-        ])
-        |> input.build,
-      button.new()
-        |> button.primary
-        |> button.attrs([event.on_click(UserSubmittedTodo)])
-        |> button.text("Add")
-        |> button.build,
-    ],
-  )
+  html.div([attribute.class("flex gap-2")], [
+    input.new()
+      |> input.primary
+      |> input.attrs([
+        attribute.class("flex-1"),
+        attribute.placeholder("What needs to be done?"),
+        attribute.value(draft),
+        attribute.autocomplete("off"),
+        event.on_input(UserTypedDraft),
+        event.on("keydown", {
+          use key <- decode.field("key", decode.string)
+          case key {
+            "Enter" -> decode.success(UserSubmittedTodo)
+            _ -> decode.failure(UserSubmittedTodo, "not-enter")
+          }
+        }),
+      ])
+      |> input.build,
+    button.new()
+      |> button.primary
+      |> button.attrs([event.on_click(UserSubmittedTodo)])
+      |> button.text("Add")
+      |> button.build,
+  ])
 }
 
 // ---------------------------------------------------------------------------
@@ -227,16 +215,13 @@ fn todo_input(draft: String) -> Element(Msg) {
 
 fn filter_bar(current: Filter, todos: List(Todo)) -> Element(Msg) {
   let active_count = list.count(todos, fn(t) { !t.done })
-  let done_count   = list.count(todos, fn(t) { t.done })
+  let done_count = list.count(todos, fn(t) { t.done })
 
-  html.div(
-    [attribute.class("flex items-center gap-2")],
-    [
-      filter_btn("All", All, current, list.length(todos)),
-      filter_btn("Active", Active, current, active_count),
-      filter_btn("Done", Done, current, done_count),
-    ],
-  )
+  html.div([attribute.class("flex items-center gap-2")], [
+    filter_btn("All", All, current, list.length(todos)),
+    filter_btn("Active", Active, current, active_count),
+    filter_btn("Done", Done, current, done_count),
+  ])
 }
 
 fn filter_btn(
@@ -289,10 +274,9 @@ fn todo_list(todos: List(Todo), filter: Filter) -> Element(Msg) {
   case visible {
     [] -> empty_state(filter)
     items ->
-      html.div(
-        [attribute.class("card bg-base-100 shadow-sm overflow-hidden")],
-        [html.ul([], list.map(items, todo_item))],
-      )
+      html.div([attribute.class("card bg-base-100 shadow-sm overflow-hidden")], [
+        html.ul([], list.map(items, todo_item)),
+      ])
   }
 }
 
@@ -358,49 +342,44 @@ fn empty_state(filter: Filter) -> Element(Msg) {
 // ---------------------------------------------------------------------------
 
 fn footer_bar(todos: List(Todo)) -> Element(Msg) {
-  let done_count   = list.count(todos, fn(t) { t.done })
+  let done_count = list.count(todos, fn(t) { t.done })
   let active_count = list.length(todos) - done_count
 
   case todos {
     [] -> html.text("")
     _ ->
-      html.div(
-        [attribute.class("space-y-3")],
-        [
-          divider.new() |> divider.build,
-          html.div(
-            [
-              attribute.class(
-                "flex items-center justify-between text-sm opacity-60 px-1",
+      html.div([attribute.class("space-y-3")], [
+        divider.new() |> divider.build,
+        html.div(
+          [
+            attribute.class(
+              "flex items-center justify-between text-sm opacity-60 px-1",
+            ),
+          ],
+          [
+            html.span([], [
+              html.text(
+                int.to_string(active_count)
+                <> case active_count {
+                  1 -> " item left"
+                  _ -> " items left"
+                },
               ),
-            ],
-            [
-              html.span([], [
-                html.text(
-                  int.to_string(active_count)
-                  <> case active_count {
-                    1 -> " item left"
-                    _ -> " items left"
-                  },
-                ),
-              ]),
-              case done_count > 0 {
-                True ->
-                  button.new()
-                    |> button.ghost
-                    |> button.xs
-                    |> button.attrs([event.on_click(UserClearedDone)])
-                    |> button.text(
-                      "Clear completed ("
-                      <> int.to_string(done_count)
-                      <> ")",
-                    )
-                    |> button.build
-                False -> html.text("")
-              },
-            ],
-          ),
-        ],
-      )
+            ]),
+            case done_count > 0 {
+              True ->
+                button.new()
+                |> button.ghost
+                |> button.xs
+                |> button.attrs([event.on_click(UserClearedDone)])
+                |> button.text(
+                  "Clear completed (" <> int.to_string(done_count) <> ")",
+                )
+                |> button.build
+              False -> html.text("")
+            },
+          ],
+        ),
+      ])
   }
 }

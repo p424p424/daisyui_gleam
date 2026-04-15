@@ -55,6 +55,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -396,6 +397,25 @@ pub fn actions_part(
   children ch: List(Element(msg)),
 ) -> Element(msg) {
   html.div([attribute.class("card-actions"), ..a], ch)
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg` when the card is clicked.
+pub fn on_click(c: Card(msg), msg: msg) -> Card(msg) {
+  Card(..c, attrs: list.append(c.attrs, [event.on_click(msg)]))
+}
+
+/// Fires `msg` when the pointer enters the card's bounding box.
+pub fn on_mouse_enter(c: Card(msg), msg: msg) -> Card(msg) {
+  Card(..c, attrs: list.append(c.attrs, [event.on_mouse_enter(msg)]))
+}
+
+/// Fires `msg` when the pointer leaves the card's bounding box.
+pub fn on_mouse_leave(c: Card(msg), msg: msg) -> Card(msg) {
+  Card(..c, attrs: list.append(c.attrs, [event.on_mouse_leave(msg)]))
 }
 
 // ---------------------------------------------------------------------------

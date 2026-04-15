@@ -157,7 +157,7 @@ fn view(_model: Nil) -> Element(Msg) {
         children: [
           button.new()
           |> button.primary
-          |> button.attrs([event.on_click(UserClickedBuy)])
+          |> button.on_click(UserClickedBuy)
           |> button.text("Buy Now")
           |> button.build,
         ],
@@ -193,18 +193,34 @@ badge.new()
 |> badge.build        // → Element(msg)
 ```
 
-Every builder exposes an `attrs/2` function for arbitrary Lustre attributes:
+Interactive components expose named event functions that fit naturally in the builder chain:
 
 ```gleam
 button.new()
 |> button.primary
-|> button.attrs([
-  attribute.id("submit-btn"),
-  event.on_click(UserSubmitted),
-])
+|> button.on_click(UserSubmitted)
+|> button.text("Submit")
+|> button.build
+
+input.new()
+|> input.primary
+|> input.on_input(UserTyped)
+|> input.attrs([attribute.placeholder("Search…")])
+|> input.build
+```
+
+Every builder also exposes an `attrs/2` function for arbitrary Lustre attributes — multiple calls accumulate rather than replace, so you can freely mix event functions with `attrs`:
+
+```gleam
+button.new()
+|> button.primary
+|> button.on_click(UserSubmitted)
+|> button.attrs([attribute.id("submit-btn"), attribute.type_("submit")])
 |> button.text("Submit")
 |> button.build
 ```
+
+For advanced cases (`event.advanced`, `event.prevent_default`, custom decoders), drop the raw attribute into `attrs` as the escape hatch.
 
 Some thin-wrapper components (e.g. `skeleton`, `link`, `theme_controller`)
 expose plain functions instead of a builder — there is no state to accumulate.
@@ -521,10 +537,8 @@ fn view(model: Model) -> Element(Msg) {
     [
       // A <select> fires UserPickedTheme on every change
       select.new()
-      |> select.attrs([
-        attribute.value(model.theme),
-        event.on_input(UserPickedTheme),
-      ])
+      |> select.on_change(UserPickedTheme)
+      |> select.attrs([attribute.value(model.theme)])
       |> select.children([
         html.option([attribute.value("light")],     "light"),
         html.option([attribute.value("dark")],      "dark"),
@@ -620,7 +634,7 @@ import lustre/event
 button.new()
 |> button.primary
 |> button.lg
-|> button.attrs([event.on_click(Clicked)])
+|> button.on_click(Clicked)
 |> button.text("Get started")
 |> button.build
 

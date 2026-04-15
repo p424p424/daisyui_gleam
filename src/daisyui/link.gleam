@@ -22,6 +22,7 @@ import gleam/string
 import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
+import lustre/event
 
 // ---------------------------------------------------------------------------
 // Types
@@ -122,7 +123,36 @@ pub fn error(l: Link(msg)) -> Link(msg) {
 /// |> link.build
 /// ```
 pub fn attrs(l: Link(msg), a: List(Attribute(msg))) -> Link(msg) {
-  Link(..l, attrs: a)
+  Link(..l, attrs: list.append(l.attrs, a))
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+/// Fires `msg` when the link is clicked.
+pub fn on_click(l: Link(msg), msg: msg) -> Link(msg) {
+  Link(..l, attrs: list.append(l.attrs, [event.on_click(msg)]))
+}
+
+/// Fires `msg` when the pointer enters the link's bounding box.
+pub fn on_mouse_enter(l: Link(msg), msg: msg) -> Link(msg) {
+  Link(..l, attrs: list.append(l.attrs, [event.on_mouse_enter(msg)]))
+}
+
+/// Fires `msg` when the pointer leaves the link's bounding box.
+pub fn on_mouse_leave(l: Link(msg), msg: msg) -> Link(msg) {
+  Link(..l, attrs: list.append(l.attrs, [event.on_mouse_leave(msg)]))
+}
+
+/// Fires `msg` when the link receives focus.
+pub fn on_focus(l: Link(msg), msg: msg) -> Link(msg) {
+  Link(..l, attrs: list.append(l.attrs, [event.on_focus(msg)]))
+}
+
+/// Fires `msg` when the link loses focus.
+pub fn on_blur(l: Link(msg), msg: msg) -> Link(msg) {
+  Link(..l, attrs: list.append(l.attrs, [event.on_blur(msg)]))
 }
 
 // ---------------------------------------------------------------------------
