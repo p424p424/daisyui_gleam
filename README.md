@@ -27,6 +27,7 @@ button.new()
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
 - [How the builder pattern works](#-how-the-builder-pattern-works)
+- [Event handlers](#-event-handlers)
 - [The colour system](#-the-colour-system)
 - [Theming](#-theming)
   - [Built-in themes](#built-in-themes)
@@ -193,37 +194,82 @@ badge.new()
 |> badge.build        // → Element(msg)
 ```
 
-Interactive components expose named event functions that fit naturally in the builder chain:
-
-```gleam
-button.new()
-|> button.primary
-|> button.on_click(UserSubmitted)
-|> button.text("Submit")
-|> button.build
-
-input.new()
-|> input.primary
-|> input.on_input(UserTyped)
-|> input.attrs([attribute.placeholder("Search…")])
-|> input.build
-```
-
-Every builder also exposes an `attrs/2` function for arbitrary Lustre attributes — multiple calls accumulate rather than replace, so you can freely mix event functions with `attrs`:
-
-```gleam
-button.new()
-|> button.primary
-|> button.on_click(UserSubmitted)
-|> button.attrs([attribute.id("submit-btn"), attribute.type_("submit")])
-|> button.text("Submit")
-|> button.build
-```
-
-For advanced cases (`event.advanced`, `event.prevent_default`, custom decoders), drop the raw attribute into `attrs` as the escape hatch.
+Every builder also exposes an `attrs/2` function for arbitrary Lustre attributes, and interactive components expose named event functions — see [Event handlers](#-event-handlers) below.
 
 Some thin-wrapper components (e.g. `skeleton`, `link`, `theme_controller`)
 expose plain functions instead of a builder — there is no state to accumulate.
+
+---
+
+## ⚡ Event handlers
+
+Every interactive component exposes named event functions that slot directly into the builder pipeline — no need to reach for `attrs([event.on_X(...)])` for common cases.
+
+```gleam
+// Before
+button.new()
+|> button.primary
+|> button.attrs([event.on_click(UserSaved)])
+|> button.text("Save")
+|> button.build
+
+// After
+button.new()
+|> button.primary
+|> button.on_click(UserSaved)
+|> button.text("Save")
+|> button.build
+```
+
+The full set across components:
+
+| Component | Available event functions |
+|-----------|--------------------------|
+| `button` | `on_click`, `on_mouse_down`, `on_mouse_up`, `on_mouse_enter`, `on_mouse_leave`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+| `input` | `on_input`, `on_change`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+| `textarea` | `on_input`, `on_change`, `on_focus`, `on_blur`, `on_keydown`, `on_keyup` |
+| `toggle` | `on_check`, `on_focus`, `on_blur` |
+| `radio` | `on_check`, `on_focus`, `on_blur` |
+| `select` | `on_change`, `on_focus`, `on_blur` |
+| `range` | `on_input`, `on_change`, `on_focus`, `on_blur` |
+| `file_input` | `on_change`, `on_focus`, `on_blur` |
+| `link` | `on_click`, `on_mouse_enter`, `on_mouse_leave`, `on_focus`, `on_blur` |
+| `card` | `on_click`, `on_mouse_enter`, `on_mouse_leave` |
+
+### Composing events with attrs
+
+`attrs/2` accumulates — multiple calls do not replace each other — so event functions and `attrs` can be freely mixed in any order:
+
+```gleam
+input.new()
+|> input.primary
+|> input.on_input(UserTyped)          // fires on every keystroke
+|> input.on_focus(InputFocused)       // fires on focus
+|> input.attrs([                      // extra HTML attributes
+     attribute.placeholder("Search…"),
+     attribute.id("search-input"),
+   ])
+|> input.build
+```
+
+### Flexibility and escape hatch
+
+If you don't use an event function, nothing is wired up — you only pay for what you use. For advanced scenarios (`event.advanced`, `event.prevent_default`, `event.debounce`, custom decoders via `event.on`), pass the attribute directly through `attrs`:
+
+```gleam
+input.new()
+|> input.primary
+|> input.on_input(UserTyped)
+|> input.attrs([
+     event.on_keydown(fn(key) {
+       case key {
+         "Enter" -> UserSubmitted
+         _       -> NoOp
+       }
+     }),
+   ])
+|> input.build
+```
 
 ---
 
