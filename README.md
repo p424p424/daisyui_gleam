@@ -36,6 +36,7 @@ button.new()
   - [Custom themes](#custom-themes)
   - [Customising a built-in theme](#customising-a-built-in-theme)
   - [Tailwind dark: selector](#tailwind-dark-selector)
+  - [Theme switching in Lustre apps](#theme-switching-in-lustre-apps)
 - [Components](#-components)
   - [🎬 Actions](#-actions)
   - [🗃️ Data Display](#️-data-display)
@@ -472,6 +473,119 @@ Now you can use `dark:` utilities in your markup:
 ```
 
 > 📚 [Full DaisyUI theming docs](https://daisyui.com/docs/themes/)
+
+---
+
+### Theme switching in Lustre apps
+
+There are three approaches to theme switching in a Lustre application. They can
+all coexist — pick whichever fits your needs.
+
+#### 1️⃣ Model-driven (recommended for full control)
+
+Store the active theme name in your model. A `Msg` triggers `update`, which
+stores the new theme name, and `view` re-renders the root element with the
+updated `data-theme` attribute. This is the right choice when you need to react
+to the theme in code (e.g. swap a chart palette or load different assets).
+
+```gleam
+import daisyui/select
+import lustre
+import lustre/attribute
+import lustre/element.{type Element}
+import lustre/element/html
+import lustre/event
+
+pub type Model { Model(theme: String) }
+pub type Msg   { UserPickedTheme(String) }
+
+pub fn main() {
+  let app = lustre.simple(fn(_) { Model(theme: "light") }, update, view)
+  let assert Ok(_) = lustre.start(app, "#app", Nil)
+  Nil
+}
+
+fn update(_model: Model, msg: Msg) -> Model {
+  case msg {
+    UserPickedTheme(t) -> Model(theme: t)
+  }
+}
+
+fn view(model: Model) -> Element(Msg) {
+  // Set data-theme on the root — the whole page inherits the theme.
+  html.div(
+    [
+      attribute.attribute("data-theme", model.theme),
+      attribute.class("min-h-screen bg-base-200"),
+    ],
+    [
+      // A <select> fires UserPickedTheme on every change
+      select.new()
+      |> select.attrs([
+        attribute.value(model.theme),
+        event.on_input(UserPickedTheme),
+      ])
+      |> select.children([
+        html.option([attribute.value("light")],     "light"),
+        html.option([attribute.value("dark")],      "dark"),
+        html.option([attribute.value("cupcake")],   "cupcake"),
+        html.option([attribute.value("synthwave")], "synthwave"),
+      ])
+      |> select.build,
+      // ...rest of your UI
+    ],
+  )
+}
+```
+
+#### 2️⃣ CSS-only toggle (two themes, no JS)
+
+A `theme_controller` checkbox swaps between two themes entirely through CSS —
+no `Msg`, no `update`, no JavaScript. Ideal for a simple dark/light toggle.
+
+```gleam
+import daisyui/theme_controller as tc
+import lustre/element/html
+import lustre/attribute
+
+// A labelled toggle: checking it activates "dark", unchecking restores the default
+html.label(
+  [attribute.class("flex items-center gap-2 cursor-pointer")],
+  [
+    html.span([], [html.text("Light")]),
+    tc.toggle("dark", []),
+    html.span([], [html.text("Dark")]),
+  ],
+)
+```
+
+#### 3️⃣ CSS-only dropdown (many themes, no JS)
+
+Radio inputs inside a dropdown each carry a `theme-controller` class. DaisyUI
+activates whichever radio is checked. Still no JavaScript needed.
+
+```gleam
+import daisyui/theme_controller as tc
+import lustre/element/html
+import lustre/attribute
+import gleam/list
+
+html.div([attribute.class("dropdown")], [
+  html.div(
+    [attribute.role("button"), attribute.class("btn btn-outline m-1")],
+    [html.text("Theme ▾")],
+  ),
+  html.ul(
+    [attribute.class("dropdown-content bg-base-300 rounded-box w-48 p-2 shadow-2xl")],
+    list.map(["light", "dark", "cupcake", "dracula", "nord"], fn(t) {
+      html.li([], [tc.radio_dropdown("theme-pick", t, t, [])])
+    }),
+  ),
+])
+```
+
+> 💻 **[See the full working example →](examples/theme_switcher_example)**  
+> Run it with `cd examples/theme_switcher_example && gleam run -m lustre/dev start`
 
 ---
 
